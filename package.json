@@ -1,0 +1,30 @@
+{
+  "name": "pastime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekfreddy/IS-403-PasTime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ekfreddy/IS-403-PasTime/issues"
+  },
+  "homepage": "https://github.com/ekfreddy/IS-403-PasTime#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "knex": "^3.1.0",
+    "node": "^25.2.1",
+    "pg": "^8.16.3"
+  }
+}

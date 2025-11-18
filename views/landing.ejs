@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PasTime | Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">PasTime</a>
+
+            <!-- Rounded Search Bar -->
+            <form class="d-flex mx-auto" style="width: 40%;">
+                <input class="form-control me-2 rounded-pill px-3"
+                    type="search"
+                    placeholder="Search hobbies or interests..."
+                    aria-label="Search" />
+                <button class="btn btn-outline-primary rounded-pill px-4" type="submit">Search</button>
+            </form>
+
+            <div>
+                <a href="/viewProfile" class="btn btn-outline-primary me-2">Profile</a>
+                <a href="/logout" class="btn btn-primary">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Nav -->
+    <nav class="navbar navbar-expand bg-light border-bottom shadow-sm">
+        <div class="container justify-content-center">
+            <ul class="navbar-nav">
+                <li class="nav-item mx-3">
+                    <a class="nav-link fw-semibold text-primary" href="/post">Post</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link fw-semibold text-primary" href="/explore">Explore</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link fw-semibold text-primary" href="/saved">Saved</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Welcome Section -->
+    <section class="py-5 text-center bg-white border-bottom">
+        <div class="container">
+            <h1 class="display-5 fw-bold">Welcome back!</h1>
+            <p class="lead text-muted">Discover new hobbies, connect with others, and share what you love doing.</p>
+        </div>
+    </section>
+
+    <!-- Feed Section -->
+    <section class="container py-5">
+        <h3 class="mb-4">Recent Posts</h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">Looking for painting buddies</h5>
+                        <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> Provo, UT</p>
+                        <p class="card-text text-muted">“Anyone interested in weekend art sessions around Provo? Let’s share techniques and have fun!”</p>
+                        <a href="/posts/1" class="btn btn-outline-primary btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">Weekend hiking group</h5>
+                        <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> Provo Canyon, UT</p>
+                        <p class="card-text text-muted">“Forming a casual group to explore trails near Provo Canyon. Beginners welcome!”</p>
+                        <a href="/posts/2" class="btn btn-outline-primary btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">Need a drummer</h5>
+                        <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> Downtown Provo</p>
+                        <p class="card-text text-muted">“We’re a small indie band looking for a drummer. We meet weekly downtown!”</p>
+                        <a href="/posts/3" class="btn btn-outline-primary btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- See More Button -->
+        <div class="text-center mt-5">
+            <a href="/feed" class="btn btn-primary px-4 py-2 rounded-pill">See More Posts</a>
+        </div>
+    </section>
+
+    <footer class="bg-light text-center py-4 mt-auto border-top">
+        <small class="text-muted">&copy; 2025 PasTime. Built for people who love what they do.</small>
+    </footer>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</body>
+</html>

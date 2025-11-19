@@ -39,7 +39,6 @@ const knex = require("knex")({
         password: process.env.RDS_PASSWORD || "SuperSecretPassword",
         database: process.env.RDS_DB_NAME || "music",
         port: process.env.RDS_PORT || 5432,
-        // The new part 
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false 
     }
 });

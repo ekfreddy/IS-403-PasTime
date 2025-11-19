@@ -18,7 +18,7 @@ let app = express();
 
 app.set("view engine", "ejs");
 
-const port = process.env.PORT || 3005;
+const port = process.env.PORT || 3000;
 
 app.use(
     session(
@@ -34,11 +34,13 @@ app.use(
 const knex = require("knex")({
     client: "pg",
     connection: {
-        host : process.env.DB_HOST || "localhost",
-        user : process.env.DB_USER || "postgres",
-        password : process.env.DB_PASSWORD || "admin",
-        database : process.env.DB_NAME || "pastimedb",
-        port : process.env.DB_PORT || 5432
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "SuperSecretPassword",
+        database: process.env.RDS_DB_NAME || "music",
+        port: process.env.RDS_PORT || 5432,
+        // The new part 
+        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false 
     }
 });
 

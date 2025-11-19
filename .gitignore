@@ -1,1 +1,5 @@
 node_modules/
+.env
+*.v1
+*.v2
+*.v3

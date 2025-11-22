@@ -3,3 +3,4 @@ node_modules/
 *.v1
 *.v2
 *.v3
+.DS_Store

@@ -1,3 +1,3 @@
 ﻿
 # Place in .platform/hooks/postdeploy directory
-sudo certbot -n -d PasTime.us-east-1.elasticbeanstalk.com --nginx --agree-tos --email ejoaquin@byu.edu
+sudo certbot -n -d pastime.is404.net --nginx --agree-tos --email ejoaquin@byu.edu

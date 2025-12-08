@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Followed Users</title>
+
+    <!-- Bootstrap -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5" style="max-width: 700px;">
+
+        <h1 class="text-center mb-4">Users You Follow</h1>
+
+        <!-- Error Message -->
+        <% if (error_message && error_message !== "") { %>
+            <div class="alert alert-danger">
+                <%= error_message %>
+            </div>
+        <% } %>
+
+        <% if (friends.length === 0) { %>
+
+            <div class="alert alert-warning">
+                You are not following anyone yet.
+            </div>
+
+        <% } else { %>
+
+            <% friends.forEach((friend) => { %>
+
+                <div class="card p-3 mb-4 shadow-sm">
+                    <h4><%= friend.username %></h4>
+
+                    <p class="text-muted">
+                        <%= friend.city %>, <%= friend.state %>
+                    </p>
+
+                    <a 
+                        href="/profile/<%= friend.user_id %>" 
+                        class="btn btn-primary w-100 mt-2"
+                    >
+                        View Profile
+                    </a>
+                    <a href="/userPosts/<%= friend.user_id %>" class="btn btn-outline-primary w-100 mt-2">
+                        View Posts
+                    </a>
+                </div>
+
+            <% }) %>
+
+        <% } %>
+
+        <a href="/" class="btn btn-secondary w-100 mt-4">Back to Home</a>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>

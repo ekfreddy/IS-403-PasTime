@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+
+    <!-- Bootstrap -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5" style="max-width: 650px;">
+
+        <h1 class="text-center mb-4">User Profile</h1>
+
+        <!-- Error Message -->
+        <% if (error_message && error_message !== "") { %>
+            <div class="alert alert-danger">
+                <%= error_message %>
+            </div>
+        <% } %>
+
+        <% if (user) { %>
+
+        <div class="card p-4 shadow-sm mb-4">
+
+            <!-- Username -->
+            <h3 class="mb-3"><%= user.username %></h3>
+
+            <!-- User Location -->
+            <p class="mb-1">
+                <strong>City:</strong> <%= user.city %>
+            </p>
+            <p class="mb-3">
+                <strong>State:</strong> <%= user.state %>
+            </p>
+
+            <!-- Follow/Unfollow Buttons -->
+            <% if (!isOwnProfile) { %>
+                <% if (isFollowing) { %>
+                    <!-- UNFOLLOW button -->
+                    <form action="/unfollow/<%= user.user_id %>" method="POST" class="mt-2">
+                        <button class="btn btn-danger w-100">
+                            Unfollow
+                        </button>
+                    </form>
+                <% } else { %>
+                    <!-- FOLLOW button -->
+                    <form action="/follow/<%= user.user_id %>" method="POST" class="mt-2">
+                        <button class="btn btn-success w-100">
+                            Follow
+                        </button>
+                    </form>
+                <% } %>
+            <% } %>
+
+            <a href="/userPosts/<%= user.user_id %>" class="btn btn-outline-primary w-100 mt-3">
+                View User's Posts
+            </a>
+
+        </div>
+
+        <% } %>
+
+        <a href="/" class="btn btn-secondary w-100 mt-4">Back to Home</a>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>

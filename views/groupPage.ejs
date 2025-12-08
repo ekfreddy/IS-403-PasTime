@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= group ? group.group_name : "Group" %></title>
+
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5" style="max-width: 750px;">
+
+        <% if (group) { %>
+
+        <h1 class="text-center mb-4"><%= group.group_name %></h1>
+
+        <div class="card p-4 shadow-sm mb-4">
+            <p><%= group.group_description %></p>
+
+            <p class="text-muted">
+                Owned by <strong><%= group.owner_name %></strong>
+            </p>
+
+            <!-- (Future Buttons: Join / Leave) -->
+
+        </div>
+
+        <!-- JOIN / LEAVE BUTTONS -->
+        <% if (isMember) { %>
+
+            <form action="/groups/<%= group.group_id %>/leave" method="POST" class="mt-2">
+                <button class="btn btn-danger w-100">Leave Group</button>
+            </form>
+
+        <% } else { %>
+
+            <form action="/groups/<%= group.group_id %>/join" method="POST" class="mt-2">
+                <button class="btn btn-success w-100">Join Group</button>
+            </form>
+
+        <% } %>
+
+
+        <!-- POSTS IN GROUP -->
+        <h3 class="mb-3">Group Posts</h3>
+
+        <% if (posts.length === 0) { %>
+
+            <div class="alert alert-warning">No posts in this group yet.</div>
+
+        <% } else { %>
+
+            <% posts.forEach((p) => { %>
+                <div class="card p-3 shadow-sm mb-4">
+                    <h4><%= p.caption %></h4>
+                    <p><%= p.content %></p>
+
+                    <p class="text-muted">
+                        Posted by <strong><%= p.username %></strong>
+                    </p>
+
+                    <a href="/posts/<%= p.post_id %>" class="btn btn-primary w-100 mt-2">
+                        View Post
+                    </a>
+                    <!-- Remove Post from Group (Only visible to the group owner) -->
+                    <% if (currentUserID === group.owner_id) { %>
+                        <form 
+                            action="/groups/<%= group.group_id %>/removePost/<%= p.post_id %>" 
+                            method="POST" 
+                            class="mt-2"
+                        >
+                            <button class="btn btn-danger w-100">
+                                Remove Post From Group
+                            </button>
+                        </form>
+                    <% } %>
+                </div>
+            <% }) %>
+
+        <% } %>
+
+        <% } else { %>
+
+            <div class="alert alert-danger">
+                <%= error_message %>
+            </div>
+
+        <% } %>
+
+        <a href="/" class="btn btn-secondary w-100 mt-4">Back to Home</a>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

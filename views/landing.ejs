@@ -23,6 +23,7 @@
                     name="query"
                     placeholder="Search posts, users, or groups..."
                     aria-label="Search"
+                    required
                 >
                 <button class="btn btn-outline-primary rounded-pill px-4" type="submit">
                     Search
@@ -76,7 +77,7 @@
 
     <!-- Recent Posts Section -->
     <section class="container py-5">
-        <h3 class="mb-4">Recent Posts Near You</h3>
+        <h3 class="mb-4">Recent Posts</h3>
 
         <% if (posts && posts.length > 0) { %>
             <div class="row g-4">
@@ -116,13 +117,13 @@
 
             <!-- No posts available -->
             <div class="text-center text-muted">
-                <p>No recent posts found near you.</p>
+                <p>No recent posts to show.</p>
             </div>
 
         <% } %>
 
         <div class="text-center mt-5">
-            <a href="/feed" class="btn btn-primary px-4 py-2 rounded-pill">See More Posts</a>
+            <a href="/feed" class="btn btn-primary px-4 py-2 rounded-pill">See Posts Near You</a>
         </div>
 
     </section>

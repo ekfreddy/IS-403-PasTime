@@ -272,14 +272,19 @@ app.get("/feed", (req, res) => {
                     knex("posts as p")
                         .join("users as u", "p.user_id", "u.user_id")
                         .leftJoin("groups as g", "p.group_id", "g.group_id")
-                        .where("p.city", user.city)
-                        .andWhere("p.state", user.state)
-                        .andWhere(function () {
-                            // Build OR conditions for each hobby
-                            hobbyList.forEach((hobby) => {
-                                this.orWhere("p.caption", "ilike", `%${hobby}%`)
-                                    .orWhere("p.content", "ilike", `%${hobby}%`);
-                            });
+                        .where(function () {
+                            // Condition 1: Same city
+                            this.where("p.city", user.city);
+                        })
+                        .orWhere(function () {
+                            // Condition 2: Same state AND hobbies match
+                            this.where("p.state", user.state)
+                                .andWhere(function () {
+                                    hobbyList.forEach((hobby) => {
+                                        this.orWhere("p.caption", "ilike", `%${hobby}%`)
+                                            .orWhere("p.content", "ilike", `%${hobby}%`);
+                                    });
+                                });
                         })
                         .select(
                             "p.post_id",
@@ -1646,24 +1651,50 @@ app.post("/groups/:id/leave", (req, res) => {
                 });
             }
 
-            // Remove from group_details table
-            knex("group_details")
-                .where({
-                    group_id: groupId,
-                    user_id: user.user_id
-                })
-                .del()
-                .then(() => {
-                    res.redirect("/groups/" + groupId);
-                })
-                .catch((err) => {
-                    console.error("Error leaving group:", err.message);
+            // Load group info to check owner
+            knex("groups")
+                .where("group_id", groupId)
+                .first()
+                .then((group) => {
 
-                    res.render("groupPage", {
-                        group: null,
-                        posts: [],
-                        error_message: "Unable to leave group."
-                    });
+                    if (!group) {
+                        return res.render("groupPage", {
+                            group: null,
+                            posts: [],
+                            error_message: "Group not found."
+                        });
+                    }
+
+                    // Prevent owner from leaving their own group
+                    if (group.group_owner === user.user_id) {
+                        return res.render("groupPage", {
+                            group: group,
+                            posts: [],
+                            isMember: true,
+                            error_message: "Group owners cannot leave their own group."
+                        });
+                    }
+
+                    // Otherwise, allow leaving
+                    knex("group_details")
+                        .where({
+                            group_id: groupId,
+                            user_id: user.user_id
+                        })
+                        .del()
+                        .then(() => {
+                            res.redirect("/groups/" + groupId);
+                        })
+                        .catch((err) => {
+                            console.error("Error leaving group:", err.message);
+
+                            res.render("groupPage", {
+                                group: group,
+                                posts: [],
+                                error_message: "Unable to leave group."
+                            });
+                        });
+
                 });
 
         })
@@ -1675,7 +1706,9 @@ app.post("/groups/:id/leave", (req, res) => {
                 error_message: "Error loading user information."
             });
         });
+
 });
+
 
 // Group owner removes a post from the group
 app.post("/groups/:groupId/removePost/:postId", (req, res) => {

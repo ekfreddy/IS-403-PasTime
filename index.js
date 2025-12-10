@@ -70,7 +70,7 @@ app.use(
 // Global authentication guard
 app.use((req, res, next) => {
     // Allow these paths without being logged in
-    if (req.path === "/login" || req.path === "/logout" || req.path === "/signup") {
+    if (req.path === "/login" || req.path === "/logout" || req.path === "/signup" || req.path === "/register") {
         return next();
     }
 
@@ -134,13 +134,14 @@ app.post("/login", (req, res) => {
     let sPassword = req.body.password;
 
     knex("users")
-        .select("email", "password")
+        .select("email", "password", "user_id")
         .where("email", sName)
         .andWhere("password", sPassword)
         .then((users) => {
             if (users.length > 0) {
                 req.session.isLoggedIn = true;
                 req.session.email = sName;
+                req.session.userID = users[0].user_id
                 res.redirect("/");
             } else {
                 res.render("login", { error_message: "Invalid login" });
@@ -160,6 +161,66 @@ app.get("/logout", (req, res) => {
     });
 });
 
+// Show registration page
+app.get("/register", (req, res) => {
+    res.render("register", { error_message: "" });
+});
+
+// Handle new user registration
+app.post("/register", (req, res) => {
+
+    const { username, usr_first_name, usr_last_name, email, password, city, state } = req.body;
+
+    // Validate required fields
+    if (!username || !usr_first_name || !usr_last_name || !email || !password || !city || !state) {
+        return res.render("register", {
+            error_message: "All fields are required."
+        });
+    }
+
+    // Ensure email and username are unique
+    knex("users")
+        .where("email", email)
+        .orWhere("username", username)
+        .first()
+        .then(existing => {
+
+            if (existing) {
+                return res.render("register", {
+                    error_message: "Email or username already in use."
+                });
+            }
+
+            // Insert new user
+            knex("users")
+                .insert({
+                    username: username,
+                    first_name: usr_first_name,
+                    last_name: usr_last_name,
+                    email: email,
+                    password: password,
+                    city: city,
+                    state: state
+                })
+                .returning(["user_id", "email"])
+                .then(([newUser]) => {
+
+                    // Auto-login after signup
+                    req.session.isLoggedIn = true;
+                    req.session.email = newUser.email;
+                    req.session.userID = newUser.user_id;
+
+                    res.redirect("/");
+                })
+                .catch(err => {
+                    console.error("Error during registration:", err.message);
+
+                    res.render("register", {
+                        error_message: "Something went wrong during registration."
+                    });
+                });
+        });
+});
 
 // ============================================================================
 // FEED
@@ -555,6 +616,7 @@ app.get("/userPosts/:id", (req, res) => {
                 return res.render("userPosts", {
                     posts: [],
                     user: null,
+                    currentUserID: req.session.userID, 
                     error_message: "User not found."
                 });
             }
@@ -576,6 +638,7 @@ app.get("/userPosts/:id", (req, res) => {
                     res.render("userPosts", {
                         posts: posts,
                         user: user,
+                        currentUserID: req.session.userID, 
                         error_message: ""
                     });
 
@@ -586,6 +649,7 @@ app.get("/userPosts/:id", (req, res) => {
                     res.render("userPosts", {
                         posts: [],
                         user: user,
+                        currentUserID: req.session.userID, 
                         error_message: "Unable to load this user's posts."
                     });
                 });
@@ -597,7 +661,50 @@ app.get("/userPosts/:id", (req, res) => {
             res.render("userPosts", {
                 posts: [],
                 user: null,
+                currentUserID: req.session.userID, 
                 error_message: "Error loading user information."
+            });
+        });
+});
+
+app.post("/posts/:id/delete", (req, res) => {
+    if (!req.session.isLoggedIn) {
+        return res.render("login", { error_message: "Please log in." });
+    }
+
+    const postId = req.params.id;
+    const currentUserID = req.session.userID;
+
+    // Check ownership
+    knex("posts")
+        .where("post_id", postId)
+        .first()
+        .then((post) => {
+            if (!post) {
+                return res.render("post", {
+                    post: null,
+                    error_message: "Post not found."
+                });
+            }
+
+            if (post.user_id !== currentUserID) {
+                return res.render("post", {
+                    post: post,
+                    error_message: "You can only delete your own posts."
+                });
+            }
+
+            // Authorized → delete
+            return knex("posts")
+                .where("post_id", postId)
+                .del()
+                .then(() => res.redirect("/userPosts/" + currentUserID));
+        })
+        .catch((err) => {
+            console.error("Delete error:", err.message);
+            res.render("post", {
+                post: null,
+                error_message: "Unable to delete post."
             });
         });
 });

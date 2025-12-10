@@ -18,7 +18,7 @@
         <a href="/groupFeed" class="btn btn-info w-100 mb-4">Group Feed</a>
 
 
-        <h1 class="text-center mb-4">Your Personalized Feed</h1>
+        <h1 class="text-center mb-4">For You Page</h1>
 
         <!-- Error Message -->
         <% if (error_message && error_message !== "") { %>
@@ -26,18 +26,6 @@
                 <%= error_message %>
             </div>
         <% } %>
-
-        <!-- Display User's Hobbies -->
-        <div class="card p-3 mb-4 shadow-sm">
-            <h5 class="mb-2">Your Hobbies:</h5>
-            <p>
-                <% if (hobbies.length === 0) { %>
-                    <span class="text-muted">No hobbies added yet.</span>
-                <% } else { %>
-                    <%= hobbies.join(", ") %>
-                <% } %>
-            </p>
-        </div>
 
         <!-- No Posts Case -->
         <% if (posts.length === 0) { %>

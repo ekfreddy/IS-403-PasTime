@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5" style="max-width: 700px;">
+
+        <h1 class="text-center mb-4">Edit Your Post</h1>
+
+        <% if (error_message && error_message !== "") { %>
+            <div class="alert alert-danger"><%= error_message %></div>
+        <% } %>
+
+        <div class="card p-4 shadow-sm">
+
+            <form action="/posts/<%= post.post_id %>/edit" method="POST">
+
+                <!-- Caption -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Caption</label>
+                    <input 
+                        type="text" 
+                        name="caption"
+                        value="<%= post.caption %>"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <!-- Content -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Content</label>
+                    <textarea 
+                        name="content"
+                        class="form-control"
+                        rows="5"
+                        required
+                    ><%= post.content %></textarea>
+                </div>
+
+                <!-- Contact Method -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Contact Method</label>
+                    <input 
+                        type="text"
+                        name="contact_method"
+                        value="<%= post.contact_method %>"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <!-- City -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">City</label>
+                    <input 
+                        type="text"
+                        name="city"
+                        value="<%= post.city %>"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <!-- State -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">State</label>
+                    <input 
+                        type="text"
+                        name="state"
+                        value="<%= post.state %>"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <!-- Group Selection -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Group (optional)</label>
+                    <select name="group_id" class="form-select">
+                        <option value="">No Group</option>
+
+                        <% groups.forEach(g => { %>
+                            <option 
+                                value="<%= g.group_id %>"
+                                <%= post.group_id == g.group_id ? "selected" : "" %>
+                            >
+                                <%= g.group_name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Save Button -->
+                <button class="btn btn-primary w-100 mt-3">
+                    Save Changes
+                </button>
+
+            </form>
+        </div>
+
+        <!-- Back Button -->
+        <a href="/posts/<%= post.post_id %>" class="btn btn-secondary w-100 mt-4">
+            Cancel & Return to Post
+        </a>
+
+    </div>
+
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>

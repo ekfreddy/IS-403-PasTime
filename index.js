@@ -10,11 +10,12 @@ PasTime — Navigation Guide
     5. FEED
     6. POSTS
     7. PROFILE
-    8. SAVED POSTS
-    9. FOLLOW SYSTEM
-    10. GROUPS
-    11. SEARCH
-    12. START SERVER
+    8. EDIT POSTS
+    9. SAVED POSTS
+    10. FOLLOW SYSTEM
+    11. GROUPS
+    12. SEARCH
+    13. START SERVER
 */
 // ============================================================================
 // INITIAL SETUP
@@ -972,6 +973,136 @@ app.get("/profile/:id", (req, res) => {
         });
 });
 
+// ============================================================================
+// EDIT POSTS
+// ============================================================================
+
+// Show Edit Post Page
+app.get("/posts/:id/edit", (req, res) => {
+
+    if (!req.session.isLoggedIn) {
+        return res.render("login", { error_message: "Please log in to edit posts." });
+    }
+
+    const postId = req.params.id;
+
+    knex("posts as p")
+        .where("p.post_id", postId)
+        .first()
+        .then((post) => {
+
+            if (!post) {
+                return res.render("post", {
+                    post: null,
+                    error_message: "Post not found."
+                });
+            }
+
+            // Ensure the logged-in user owns this post
+            if (post.user_id !== req.session.userID) {
+                return res.render("post", {
+                    post: post,
+                    error_message: "You can only edit your own posts."
+                });
+            }
+
+            // Load groups the user belongs to for dropdown
+            knex("group_details as gd")
+                .join("groups as g", "gd.group_id", "g.group_id")
+                .where("gd.user_id", req.session.userID)
+                .select("g.group_id", "g.group_name")
+                .orderBy("g.group_name", "asc")
+                .then((groups) => {
+
+                    res.render("editPost", {
+                        post: post,
+                        groups: groups,
+                        error_message: ""
+                    });
+
+                });
+
+        })
+        .catch((err) => {
+            console.error("Error loading post for edit:", err.message);
+            res.render("post", {
+                post: null,
+                error_message: "Unable to load post for editing."
+            });
+        });
+});
+
+// Handle Edit Post Submission
+app.post("/posts/:id/edit", (req, res) => {
+
+    if (!req.session.isLoggedIn) {
+        return res.render("login", { error_message: "Please log in." });
+    }
+
+    const postId = req.params.id;
+    const { caption, content, contact_method, city, state, group_id } = req.body;
+
+    // Validate required fields
+    if (!caption || !content || !contact_method || !city || !state) {
+        return res.render("editPost", {
+            post: { post_id: postId, caption, content, contact_method, city, state, group_id },
+            groups: [],
+            error_message: "All fields except group are required."
+        });
+    }
+
+    // Ensure the user owns this post
+    knex("posts")
+        .where("post_id", postId)
+        .first()
+        .then((post) => {
+
+            if (!post) {
+                return res.render("post", {
+                    post: null,
+                    error_message: "Post not found."
+                });
+            }
+
+            if (post.user_id !== req.session.userID) {
+                return res.render("post", {
+                    post: post,
+                    error_message: "You can only edit your own posts."
+                });
+            }
+
+            // Update the post
+            knex("posts")
+                .where("post_id", postId)
+                .update({
+                    caption: caption,
+                    content: content,
+                    contact_method: contact_method,
+                    city: city,
+                    state: state,
+                    group_id: group_id || null
+                })
+                .then(() => {
+                    res.redirect("/posts/" + postId);
+                })
+                .catch((err) => {
+                    console.error("Error updating post:", err.message);
+                    res.render("editPost", {
+                        post: post,
+                        groups: [],
+                        error_message: "Unable to update post."
+                    });
+                });
+
+        })
+        .catch((err) => {
+            console.error("Error loading post:", err.message);
+            res.render("post", {
+                post: null,
+                error_message: "Could not verify post ownership."
+            });
+        });
+});
 
 // ============================================================================
 // SAVED POSTS

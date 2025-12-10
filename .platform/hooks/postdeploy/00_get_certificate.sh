@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 # Place in .platform/hooks/postdeploy directory
-sudo certbot -n -d pastime.is404.net --nginx --agree-tos --email ejoaquin@byu.edu
+sudo certbot -n -d pas-time.is404.net --nginx --agree-tos --email ejoaquin@byu.edu
